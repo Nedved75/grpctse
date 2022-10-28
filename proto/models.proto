@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package relay;
+
+import "google/protobuf/any.proto";
+
+option csharp_namespace = "Relay";
+
+// This is temp message until there is support in Grpc.Core
+// https://github.com/grpc/grpc-dotnet/issues/303
+// https://cloud.google.com/apis/design/errors#rpc_mapping
+message Status {
+  // This corresponds to `google.rpc.Status.code`.
+  int32 code = 1;
+  // This corresponds to `google.rpc.Status.message`.
+  string message = 2;
+  // This corresponds to `google.rpc.Status.details`.
+  repeated google.protobuf.Any details = 3;
+}
+
+message Error {
+  int32 code = 1;
+  string message = 2;
+}
+
+message ValidationError {
+  int32 code = 1;
+  string message = 2;
+  string parameter_name = 3;
+}
+
+enum PaymentMethod {
+  UNSPECIFIED = 0;
+  PPRO_TRUSTLY = 1;
+  PPRO_SOFORT = 2;
+  PPRO_IDEAL = 3;
+  PPRO_BANCONTACT = 4;
+}
