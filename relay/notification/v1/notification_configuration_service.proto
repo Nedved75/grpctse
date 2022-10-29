@@ -3,6 +3,8 @@ syntax = "proto3";
 package relay.notification.v1;
 
 import "google/protobuf/any.proto";
+import "google/protobuf/wrappers.proto";
+
 import "relay/models.proto";
 
 option csharp_namespace = "Relay.Notification.V1";
@@ -21,7 +23,7 @@ message CreateWebhookConfigurationRequest {
 }
 
 message CreateWebhookConfigurationResponse {
-  string notification_configuration_id = 1;
+  google.protobuf.StringValue notification_configuration_id = 1;
   relay.Status status = 101;
 }
 

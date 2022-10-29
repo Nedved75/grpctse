@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package relay.onboarding.v1.paymentmethods.expressbank;
+
+option csharp_namespace = "Relay.Onboarding.V1.PaymentMethods.ExpressBank";
+
+message InitializeRequestData {
+  // Partner ID code
+  int64 partner_id = 1;
+  // Financial product agreement ID
+  int64 product_group_id = 2;
+  // Unique key used in cancel and capture operations
+  string event_record_pass_key = 3;
+  // Unique key used in refund operations
+  string finance_pass_key = 4;
+  // Assigned currency for partner ID. Format: ISO-4217 alpha code, e.g. EUR, USD, GBP
+  string currency = 5;
+}
+
+message UpdateRequestData {
+  // Partner ID code
+  int64 partner_id = 1;
+  // Financial product agreement ID
+  int64 product_group_id = 2;
+  // Unique key used in cancel and capture operations
+  string event_record_pass_key = 3;
+  // Unique key used in refund operations
+  string finance_pass_key = 4;
+  // Assigned currency for partner ID. Format: ISO-4217 alpha code, e.g. EUR, USD, GBP
+  string currency = 5;
+}

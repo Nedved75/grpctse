@@ -1,23 +1,22 @@
 syntax = "proto3";
 
-package relay.processing.v1.paymentmethods.ppro.trustly;
+package relay.processing.v1.paymentmethods.ppro.giropay;
 
-option csharp_namespace = "Relay.Processing.V1.PaymentMethods.Ppro.Trustly";
+option csharp_namespace = "Relay.Processing.V1.PaymentMethods.Ppro.Giropay";
 
 message ChargeRequestData {
-  relay.processing.v1.paymentmethods.ppro.trustly.PaymentFlowRedirectRequestData payment_flow_data = 1;
-  relay.processing.v1.paymentmethods.ppro.trustly.Consumer consumer = 2;
+  relay.processing.v1.paymentmethods.ppro.giropay.PaymentFlowRedirectRequestData payment_flow_data = 1;
+  relay.processing.v1.paymentmethods.ppro.giropay.Consumer consumer = 2;
 }
 
 message ChargeResponseData {
-  relay.processing.v1.paymentmethods.ppro.trustly.PaymentFlowRedirectResponseData payment_flow_data = 1;
+  relay.processing.v1.paymentmethods.ppro.giropay.PaymentFlowRedirectResponseData payment_flow_data = 1;
 }
 
 message Consumer {
   string name = 1;
   // Format: ISO 3166-1 alpha-3, e.g. NOR, SWE, DNK
   string country_code = 2;
-  string reference = 3;
 }
 
 message PaymentFlowRedirectRequestData {

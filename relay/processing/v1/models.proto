@@ -25,6 +25,7 @@ enum Operation {
   CANCEL = 1;
   CHARGE = 2;
   REFUND = 3;
+  CAPTURE = 4;
 }
 
 message OperationError {

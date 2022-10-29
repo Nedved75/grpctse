@@ -3,6 +3,7 @@ syntax = "proto3";
 package relay.processing.v1;
 
 import "google/protobuf/any.proto";
+import "google/protobuf/wrappers.proto";
 
 import "relay/models.proto";
 import "relay/processing/v1/models.proto";
@@ -10,11 +11,66 @@ import "relay/processing/v1/models.proto";
 option csharp_namespace = "Relay.Processing.V1";
 
 service PaymentProcessing {
+  rpc Authorize (AuthorizeRequest) returns (AuthorizeResponse) {}
+  rpc Cancel(CancelRequest) returns (CancelResponse) {}
+  rpc Capture (CaptureRequest) returns (CaptureResponse) {}
+
   rpc Charge (ChargeRequest) returns (ChargeResponse) {}
   rpc Refund (RefundRequest) returns (RefundResponse) {}
 
   rpc GetSummary (GetSummaryRequest) returns (GetSummaryResponse) {}
   rpc GetOperationsSummary (GetOperationsSummaryRequest) returns (GetOperationsSummaryResponse) {}
+}
+
+message AuthorizeRequest {
+  string payment_method_configuration_id = 1;
+  string request_id = 2;
+  string reference = 3;
+  relay.PaymentMethod payment_method = 4;
+  Order order = 5;
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+}
+
+message AuthorizeResponse {
+  google.protobuf.StringValue payment_id = 1;
+  google.protobuf.StringValue authorization_id = 2;
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+  relay.Status status = 101;
+}
+
+message CancelRequest {
+  string payment_id = 1;
+  string request_id = 2;
+  string reference = 3;
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+}
+
+message CancelResponse {
+  google.protobuf.StringValue payment_id = 1;
+  google.protobuf.StringValue cancel_id = 2;
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+  relay.Status status = 101;
+}
+
+message CaptureRequest {
+  string payment_id = 1;
+  string request_id = 2;
+  string reference = 3;
+  int64 amount = 4; 
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+}
+
+message CaptureResponse {
+  google.protobuf.StringValue payment_id = 1;
+  google.protobuf.StringValue capture_id = 2;
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+  relay.Status status = 101;
 }
 
 message ChargeRequest {
@@ -28,8 +84,8 @@ message ChargeRequest {
 }
 
 message ChargeResponse {
-  string payment_id = 1;
-  string charge_id = 2;
+  google.protobuf.StringValue payment_id = 1;
+  google.protobuf.StringValue charge_id = 2;
   // Payment method specific information
   google.protobuf.Any data = 100;
   relay.Status status = 101;
@@ -45,7 +101,7 @@ message RefundRequest {
 }
 
 message RefundResponse {
-  string refund_id = 1;
+  google.protobuf.StringValue refund_id = 1;
   // Payment method specific information
   google.protobuf.Any data = 100;
   relay.Status status = 101;
@@ -57,11 +113,10 @@ message GetSummaryRequest {
 
 message GetSummaryResponse {
   int64 authorized_amount = 1;
-  int64 charged_amount = 2;
+  int64 captured_amount = 2;
   int64 canceled_amount = 3;
   int64 refunded_amount = 4;
-  string currency = 5;
-
+  google.protobuf.StringValue currency = 5;
   relay.Status status = 101;
 }
 
