@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package relay.processing.v1;
+
+import "google/protobuf/any.proto";
+
+import "relay/models.proto";
+import "relay/processing/v1/models.proto";
+
+option csharp_namespace = "Relay.Processing.V1";
+
+service PaymentProcessing {
+  rpc Charge (ChargeRequest) returns (ChargeResponse) {}
+  rpc Refund (RefundRequest) returns (RefundResponse) {}
+
+  rpc GetSummary (GetSummaryRequest) returns (GetSummaryResponse) {}
+  rpc GetOperationsSummary (GetOperationsSummaryRequest) returns (GetOperationsSummaryResponse) {}
+}
+
+message ChargeRequest {
+  string payment_method_configuration_id = 1;
+  string request_id = 2;
+  string reference = 3;
+  relay.PaymentMethod payment_method = 4;
+  Order order = 5;
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+}
+
+message ChargeResponse {
+  string payment_id = 1;
+  string charge_id = 2;
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+  relay.Status status = 101;
+}
+
+message RefundRequest {
+  string payment_id = 1;
+  string request_id = 2;
+  string reference = 3;
+  int64 amount = 4;
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+}
+
+message RefundResponse {
+  string refund_id = 1;
+  // Payment method specific information
+  google.protobuf.Any data = 100;
+  relay.Status status = 101;
+}
+
+message GetSummaryRequest {
+  string payment_id = 1;
+}
+
+message GetSummaryResponse {
+  int64 authorized_amount = 1;
+  int64 charged_amount = 2;
+  int64 canceled_amount = 3;
+  int64 refunded_amount = 4;
+  string currency = 5;
+
+  relay.Status status = 101;
+}
+
+message GetOperationsSummaryRequest {
+  string payment_id = 1;
+}
+
+message GetOperationsSummaryResponse {
+  repeated OperationSummary operations = 1;
+  relay.Status status = 101;
+}
