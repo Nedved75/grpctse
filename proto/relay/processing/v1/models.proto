@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package relay.processing.v1;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Relay.Processing.V1";
+
+message OperationSummary {
+  string id = 1;
+  Operation operation = 2;
+  int64 amount = 3;
+  google.protobuf.Timestamp last_updated = 4;
+  string reference = 5;
+  string recon_reference = 6;
+  string currency = 7;
+
+  OperationStatus status = 100;
+  OperationError error = 101;
+}
+
+enum Operation {
+  AUTHORIZE = 0;
+  CANCEL = 1;
+  CHARGE = 2;
+  REFUND = 3;
+  CAPTURE = 4;
+}
+
+message OperationError {
+  string code = 1;
+  string message = 2;
+}
+
+enum OperationStatus {
+  PENDING = 0;
+  COMPLETED = 1;
+  FAILED = 2;
+}
+
+message Order {
+  // Format: ISO-4217, Minor units of currency, e.g. Amount=100, Currency=EUR -> 1.00 EUR
+  int64 amount = 1;
+  // Format: ISO-4217 alpha code, e.g. EUR, USD, GBP
+  string currency = 2;
+  // Merchant specific reference, e.g. invoice number
+  google.protobuf.StringValue reference = 3;
+}

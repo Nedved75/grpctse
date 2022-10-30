@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package relay.onboarding.v1;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/wrappers.proto";
+
+import "relay/models.proto";
+
+option csharp_namespace = "Relay.Onboarding.V1";
+
+service PaymentMethodOnboarding {
+  rpc Initialize (InitializeRequest) returns (InitializeResponse) {}
+  rpc Update (UpdateRequest) returns (UpdateResponse) {}
+  rpc Get (GetRequest) returns (GetResponse) {}
+}
+
+enum PaymentMethodOnboardingStatus {
+  PENDING = 0;
+  ACTIVATED = 1;
+  NON_COMPLIANT =2;
+  DEACTIVATED = 3;
+  TERMINATED = 4;
+}
+
+message InitializeRequest {
+  // Regex: ^.{1,36}$
+  string reference = 1;
+  relay.PaymentMethod payment_method = 2;
+  // Payment method specific information.
+  google.protobuf.Any data = 100;
+}
+
+message InitializeResponse {
+  google.protobuf.StringValue payment_method_configuration_id = 1;
+  // Payment method specific information.
+  google.protobuf.Any data = 100;
+  relay.Status status = 101;
+}
+
+message UpdateRequest {
+  string payment_method_configuration_id = 1;
+  relay.PaymentMethod payment_method = 2;
+  // Payment method specific information.
+  google.protobuf.Any data = 100;
+}
+
+message UpdateResponse {
+  // Payment method specific information.
+  google.protobuf.Any data = 100;
+  relay.Status status = 101;  
+}
+
+message GetRequest {
+  string payment_method_configuration_id = 1;
+  relay.PaymentMethod payment_method = 2;
+}
+
+message GetResponse {
+  PaymentMethodOnboardingStatus payment_method_onboarding_status = 1;
+  // Payment method specific information.
+  google.protobuf.Any data = 100;
+  relay.Status status = 101;
+}

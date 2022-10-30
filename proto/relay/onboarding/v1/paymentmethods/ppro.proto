@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package relay.onboarding.v1.paymentmethods.ppro;
+
+option csharp_namespace = "Relay.Onboarding.V1.PaymentMethods.Ppro";
+
+message InitializeRequestData {
+  BusinessDetails business_details = 1;
+  PaymentMethodInformation payment_method_information = 2;
+  LegalEntity legal_entity = 3;
+}
+
+message UpdateRequestData {
+  BusinessDetails business_details = 1;
+  LegalEntity legal_entity = 3;
+}
+
+message BusinessDetails {
+  // Format: ISO-18245, eg 4011
+  // Regex: [0-9]{4}
+  string merchant_category_code = 1;
+  // Regex: [0-9a-zA-Z.%,&amp;/+*${|}- {0,255}
+  string payment_descriptor = 2;
+  // Regex: [^A-Za-z0-9:?/+(),_. -]{0,255}
+  string trade_name = 3;
+  // Max number of websites: 100
+  repeated string websites = 4;
+  MonthlyTransactions monthly_transactions = 5;
+  // Regex: [+]?[0-9]{8,19}
+  string phone_number = 6;
+  // Regex: [ˆ@ ]+@[ˆ@ ]+\.[ˆ@ ]+
+  string email_address = 7;
+  google.protobuf.Timestamp incorporation_date = 8;
+}
+
+message MonthlyTransactions {
+  string count = 1;
+  // Regex: [0-9]+(.[0-9]{1,3})?
+  string average_value = 2;
+  // Format: ISO-4217 - Alphabetic Currency Code
+  string currency = 3;
+}
+
+message PaymentMethodInformation {
+  Residence creditor_residence = 1;
+  string creditor_id = 2;
+  string creditor_name = 3;
+}
+
+message LegalEntity {
+  Partnership partnership = 1;
+  Individual individual = 2;
+  Organization organization = 3;
+  NonprofitOrganization non_profit_organization = 4;
+}
+
+message Partnership {
+  // Regex: ^.{0,255}$
+  string name = 1;
+  // Regex: [0-9a-zA-Z]{1, 255} 
+  string registration_number = 2;
+  Residence residence = 3;
+  // Max number of partners: 30
+  repeated Person partners = 4;
+}
+
+message Name {
+  // Regex: ^.{0,255}$
+  string title = 1;
+  // Regex: ^.{0,255}$
+  string first_name = 2;
+  // Regex: ^.{0,255}$
+  string middle_name = 3;
+  // Regex: ^.{0,255}$
+  string last_name = 4;
+}
+
+message Individual {
+  // Regex: ^.{0,255}$
+  string name = 1;
+  Residence residence = 2;
+  Person person = 3;
+}
+
+message Organization {
+  // Regex: ^.{0,255}$
+  string name = 1;
+  // Regex:[0-9a-zA-Z]{1, 255}
+  string registration_number = 2;
+  Residence residence = 3;
+  // Max number of directors: 30
+  repeated Person directors = 4;
+  // Max number of ultimate beneficial ownwers: 30
+  repeated Person ultimate_beneficial_owners = 5;
+}
+
+message NonprofitOrganization {
+  // Regex: ^.{0,255}$
+  string name = 1;
+  // Regex:[0-9a-zA-Z]{1, 255}
+  string registration_number = 2;
+  Residence residence = 3;
+  // Max number of directors: 30
+  repeated Person directors = 4;
+  // Max number of ultimate beneficial ownwers: 30
+  repeated Person ultimate_beneficial_owners = 5;
+}
+
+message Person {
+  Name name = 1;
+  google.protobuf.Timestamp date_of_birth = 2;
+  Residence residence = 3;
+}
+
+message Residence {
+  repeated string address = 1;
+  // Regex: [0-9a-zA-Z- ]{1,31}
+  string zip_code = 2;
+  // Regex: [0-9a-zA-Z- ]{1, 255}
+  string city = 3;
+  // Regex: [0-9a-zA-Z- ]{0, 255}
+  string state = 4;
+  // Format: ISO-3166
+  string country = 5;
+}

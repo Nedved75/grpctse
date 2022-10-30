@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package relay.processing.v1.paymentmethods.expressbank;
+
+option csharp_namespace = "Relay.Processing.V1.PaymentMethods.ExpressBank";
+
+message AuthorizeRequestData {
+  relay.processing.v1.paymentmethods.expressbank.PaymentFlowRedirectRequestData payment_flow_data = 1;
+  // Regex: ^.{1,30}$
+  repeated string items = 2;
+}
+
+message AuthorizeResponseData {
+  PaymentFlowRedirectResponseData payment_flow_data = 1;
+}
+
+message PaymentFlowRedirectResponseData {
+  string approval_url = 1;
+}
+
+message RefundRequestData {
+  // Express Bank refund reason code
+  RefundReasonCode reason_code = 1;
+}
+
+message PaymentFlowRedirectRequestData {
+  // PaymentId and AuthorizeId are appended as query parameters
+  string success_url = 1;
+  // PaymentId and AuthorizeId are appended as query parameters
+  string failed_url = 2;
+}
+
+// Express Bank refund reason codes
+enum RefundReasonCode {
+  DEFECT_IN_PRODUCT = 0;
+  CUSTOMER_CHANGED_HIS_MIND = 1;
+  PRODUCT_RECALLED = 2;
+  TECHNICAL_OR_HUMAN_ERROR = 3;
+}

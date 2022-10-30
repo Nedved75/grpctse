@@ -1,0 +1,171 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+package relay.onboarding.v1.paymentmethods.klarna;
+
+option csharp_namespace = "Relay.Onboarding.V1.PaymentMethods.Klarna";
+
+message InitializeRequestData {
+  BusinessDetails business_details = 1;
+  StoreDetails store_details = 2;
+  repeated StakeholderDetails stakeholders_details = 3;
+}
+
+message UpdateRequestData {
+  BusinessDetails business_details = 1;
+  StoreDetails store_details = 2;
+  repeated StakeholderDetails stakeholders_details = 3;
+}
+
+message BusinessDetails {
+  // Name of the company merchant is registered to.
+  google.protobuf.StringValue name = 1;
+  Address registered_address = 2;
+  // Indicates if the merchant has a registered business or acting as a non-registered sole trader.
+  bool is_registered = 3;
+  // The id of the company merchant is registered to.
+  google.protobuf.StringValue registration_id = 4;
+  // Boolean value indicating if merchant is subject to VAT.
+  bool subject_to_vat = 5;
+  // VAT Id of the merchant.
+  google.protobuf.StringValue vat_id = 6;
+}
+
+message StakeholderDetails {
+  // resource id in UUID format.
+  google.protobuf.StringValue resource_id = 1;
+  // The stakeholder's first name.
+  google.protobuf.StringValue given_name = 2;
+  // The stakeholder's last name.
+  google.protobuf.StringValue family_name = 3;
+  // The stakeholder's date of birth in yyyy-MM-dd format.
+  google.protobuf.Timestamp date_of_birth = 4;
+  Address address = 5;
+  // Personal id to identify the stakeholder.
+  google.protobuf.StringValue personal_id = 6;
+  // Roles of stakeholder.
+  repeated Roles roles = 7;
+}
+
+message Address {
+  // The street including the house number.
+  google.protobuf.StringValue street = 1;
+  // Second address field for additional street information.
+  google.protobuf.StringValue street2 = 2;
+  // The postal code.
+  google.protobuf.StringValue postal_code = 3;
+  // The city.
+  google.protobuf.StringValue city = 4;
+  // The merchant's country ISO-3166 Aplpha-3
+  google.protobuf.StringValue country_code = 5 ;
+  // The region/state (ISO_3166-2 format)
+  google.protobuf.StringValue region = 6;
+}
+
+message StoreDetails {
+  // The name of the store (brand name).
+  google.protobuf.StringValue name = 1;
+  // The URL where the store is reachable online.
+  google.protobuf.StringValue url = 2 ;
+  // The industry/type of goods or services the store is selling.
+  Category category = 3;
+  // The merchant's country ISO-3166 Aplpha-3
+  google.protobuf.StringValue country_code = 4;
+  // The URL of the store's logo (PNG at least 180x180 px and maximum size of 2MB. For optimal display, Please choose a logo with transparent background and no white space). [ 0 .. 2083 ] characters
+  google.protobuf.StringValue logo_url =5;
+  // The URL of the store's square icon (PNG at least 180x180 px, maximum size of 2MB and should be square. For best display, Please choose an icon with transparent background and no white space). [ 0 .. 2083 ] characters
+  google.protobuf.StringValue icon_url = 6;
+  // The merchant's preferred feature image. [ 0 .. 2083 ] characters
+  google.protobuf.StringValue feature_image_url = 7;
+  // The merchant's preferred facebook URL. [ 0 .. 2083 ] characters
+  google.protobuf.StringValue facebook_url = 8 ;
+  // The merchant's preferred instagram URL. [ 0 .. 2083 ] characters
+  google.protobuf.StringValue instagram_url = 9;
+  // The merchant's main email address that is used for communication and dispute resolution. [ 0 .. 255 ] characters
+  google.protobuf.StringValue admin_email_address = 10;
+  // the email address used in case of fraud activities, when there was a detection of a Merchant doing a fraudulent transaction we send a Stop Request to this email address. [ 0 .. 255 ] characters.Regex: [ˆ@ ]+@[ˆ@ ]+\.[ˆ@ ]
+  google.protobuf.StringValue risk_email_address = 11;
+  // The email address of the store's customer support. [ 0 .. 255 ] characters. Regex: [ˆ@ ]+@[ˆ@ ]+\.[ˆ@ ]
+  google.protobuf.StringValue customer_support_email_address = 12;
+  // The phone number of the store's customer support. Regex: [+]?[0-9]{8,19}
+  google.protobuf.StringValue customer_support_phone_number = 13;
+}
+
+enum Category{
+  ADULT_SHOES_AND_CLOTHING = 0; 
+  AUTOMOTIVE_PARTS_AND_ACCESSORIES = 1; 
+  BAGS_AND_WALLETS = 2; 
+  BODY_AND_HAIR_CARE = 3; 
+  BOOK_AND_MAGAZINES = 4; 
+  CANDY = 5; 
+  CAR_ELECTRONICS =  6; 
+  CHILDREN_CLOTHES_AND_NURTURING_PRODUCTS = 7; 
+  CHILDREN_TOYS = 8; 
+  CLEANING_AND_SANITARY =  9; 
+  COLLECTIBLES = 10; 
+  CONCEPT_STORES_AND_MISCELLANEOUS = 11; 
+  COSMETICS = 12; 
+  COSTUMES_AND_PARTY_SUPPLIES = 13; 
+  DATING_SERVICES = 14; 
+  DECORATION_AND_ART = 15; 
+  DIETARY_SUPPLEMENTS = 16; 
+  DIGITAL_SERVICES = 17; 
+  DIVERSIFIED_CHILDREN_PRODUCTS = 18; 
+  DIVERSIFIED_ELECTRONICS = 19; 
+  DIVERSIFIED_ENTERTAINMENT = 20; 
+  DIVERSIFIED_EROTIC_MATERIAL = 21;
+  DIVERSIFIED_HOME_AND_GARDEN_PRODUCTS = 22; 
+  DIVERSIFIED_JEWELRY_AND_ACCESSORIES = 23; 
+  DIVERSIFIED_HEALTH_AND_BEAUTY_PRODUCTS = 24; 
+  DIVERSIFIES_HEALTH_AND_BEAUTY_PRODUCTS = 25; 
+  EDUCATION = 26; 
+  ELECTRONIC_EQUIPMENT_AND_RELATED_ACCESSORIES = 27; 
+  EROTIC_CLOTHING_AND_ACCESSORIES = 28; 
+  EVENT_TICKETS = 29; 
+  FOOD_AND_BEVERAGE = 30; 
+  FRAGRANCES = 31; 
+  FURNITURE = 32; 
+  GENERAL_SHOES_AND_CLOTHING = 33; 
+  HOBBY_ARTICLES = 34; 
+  HOUSEHOLD_ELECTRONICS = 35; 
+  JEWELRY_AND_WATCHES = 36; 
+  KITCHENWARE = 37; 
+  MARKETPLACES = 38; 
+  MUSIC_AND_MOVIES = 39; 
+  MUSICAL_INSTRUMENTS_AND_EQUIPMENT = 40; 
+  NON_PRESCRIPTION_SUNGLASSES_AND_LENSES = 41; 
+  OFFICE_MACHINES_AND_RELATED_ACCESSORIES = 42; 
+  OTHER_SERVICES = 43; 
+  PERSONAL_CARE_AND_BODY_IMPROVEMENT = 44; 
+  PET_SUPPLIES = 45; 
+  PHARMACEUTICAL_PRODUCTS = 46; 
+  PLANTS_AND_FLOWERS = 47; 
+  PRESCRIPTION_OPTICS = 48; 
+  PRINTS_AND_PHOTOS = 49; 
+  SAFETY_PRODUCTS = 50; 
+  SEX_TOYS = 51; 
+  SPORTS_GEAR_AND_OUTDOOR = 52; 
+  TOBACCO = 53; 
+  TOOLS_AND_HOME_IMPROVEMENT = 54; 
+  TRAVEL_SERVICES = 55; 
+  UNDERWEAR = 56; 
+  VIDEO_GAMES_AND_RELATED_ACCESSORIES = 57; 
+  WHEELS_AND_TIRES = 58; 
+  WINE_BEER_AND_LIQUOR = 59; 
+  YOUTHFUL_SHOES_AND_CLOTHING = 60;
+}
+
+enum Roles{
+  APPLICANT = 0; 
+  CONTROL_OVER_MANAGEMENT = 1; 
+  OWNER = 2; 
+  PARTNER = 3; 
+  SOLE_TRADER = 4; 
+  ULTIMATE_BENEFICIAL_OWNER = 5;
+  MANAGING_DIRECTOR =  6; 
+  POLITICALLY_EXPOSED_PERSON = 7; 
+  MATERIAL_INFLUENCER = 8; 
+  NOT_APPLICABLE =  9; 
+}

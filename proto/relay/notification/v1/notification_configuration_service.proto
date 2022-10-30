@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package relay.notification.v1;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/wrappers.proto";
+
+import "relay/models.proto";
+
+option csharp_namespace = "Relay.Notification.V1";
+
+service NotificationConfiguration {
+  rpc CreateWebhookConfiguration (CreateWebhookConfigurationRequest) returns (CreateWebhookConfigurationResponse) {}
+  
+  rpc Get (GetConfigurationRequest) returns (GetConfigurationResponse) {}
+  rpc Delete (DeleteConfigurationRequest) returns (DeleteConfigurationResponse) {}
+}
+
+message CreateWebhookConfigurationRequest {
+  string request_id = 1;
+  repeated string events = 2;
+  string url = 3;
+}
+
+message CreateWebhookConfigurationResponse {
+  google.protobuf.StringValue notification_configuration_id = 1;
+  relay.Status status = 101;
+}
+
+message GetConfigurationRequest {
+  string notification_configuration_id = 1;
+}
+
+message GetConfigurationResponse {
+  repeated string events = 1;
+  // Channel specific information.
+  google.protobuf.Any data = 100;
+  relay.Status status = 101;
+}
+
+message DeleteConfigurationRequest {
+  string notification_configuration_id = 1;
+}
+
+message DeleteConfigurationResponse {
+  relay.Status status = 101;
+}

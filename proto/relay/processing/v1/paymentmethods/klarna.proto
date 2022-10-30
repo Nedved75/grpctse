@@ -1,0 +1,245 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+package relay.processing.v1.paymentmethods.klarna;
+
+option csharp_namespace = "Relay.Processing.V1.PaymentMethods.Klarna";
+
+message AuthorizeRequestData {
+  // B2C or B2B
+  Customer customer = 1;
+  Address billing_address = 2;
+  OrderDetails order_details = 3;
+
+  // The acquiring channel in which the session takes place. Ecommerce is default unless specified. Any other values should be defined in the agreement. Available values: "ECOMMERCE" "IN_STORE" "TELESALES". ECOMMERCE is default.
+  AcquiringChannel acquiring_channel = 4;
+  // Used to define the language and region of the customer. The locale follows the format of RFC 1766, meaning language-country. Regex: ^[A-Za-z]{2,2}(?:-[A-Za-z]{2,2})*$
+  string locale = 5;
+
+  PaymentFlowRedirectRequestData payment_flow_data = 100;
+}
+
+message AuthorizeResponseData {
+  PaymentFlowRedirectResponseData payment_flow_data = 1;
+  // Session expiration time. 48 hours
+  google.protobuf.Timestamp expires_at = 2;
+}
+
+message ChargeRequestData {
+  // B2C or B2B
+  Customer customer = 1;
+  Address billing_address = 2;
+  OrderDetails order_details = 3;
+
+  // The acquiring channel in which the session takes place. Ecommerce is default unless specified. Any other values should be defined in the agreement. Available values: "ECOMMERCE" "IN_STORE" "TELESALES". ECOMMERCE is default.
+  AcquiringChannel acquiring_channel = 4;
+  // Used to define the language and region of the customer. The locale follows the format of RFC 1766, meaning language-country. Regex: ^[A-Za-z]{2,2}(?:-[A-Za-z]{2,2})*$
+  string locale = 5;
+
+  PaymentFlowRedirectRequestData payment_flow_data = 100;
+}
+
+message ChargeResponseData {
+  PaymentFlowRedirectResponseData payment_flow_data = 1;
+  // Session expiration time. 48 hours
+  google.protobuf.Timestamp expires_at = 2;
+}
+
+message CaptureRequestData {
+  // Order lines for this capture. Maximum 1000 items.
+  repeated OrderItem order_items = 1;
+  // To be clarified. Description of the capture shown to the customer. Max length is 255 characters.
+  google.protobuf.StringValue description = 2;
+  // Shipping information for this capture. Maximum 500 items.
+  repeated ShippingInfo shipping_info = 3;
+}
+
+message ShippingInfo
+{
+  // Name of the shipping company for the return shipment (as specific as possible). Maximum 100 characters. Example: 'DHL US' and not only 'DHL'
+  google.protobuf.StringValue return_shipping_company = 1;
+  // Tracking number for the return shipment. Maximum 100 characters.
+  google.protobuf.StringValue return_tracking_number = 2;
+  // URL where the customer can track the return shipment. Maximum 1024 characters.
+  google.protobuf.StringValue return_tracking_uri = 3;
+  // Name of the shipping company (as specific as possible). Maximum 100 characters. Example: 'DHL US' and not only 'DHL'
+  google.protobuf.StringValue shipping_company = 4;
+  // Shipping method. Allowed values matches (PickUpStore|Home|BoxReg|BoxUnreg|PickUpPoint|Own|Postal|DHLPackstation|Digital|Undefined|PickUpWarehouse|ClickCollect|PalletDelivery)
+  ShippingMethod shipping_method = 5;
+  // Tracking number for the shipment. Maximum 100 characters.
+  google.protobuf.StringValue tracking_number = 6;
+  // URI where the customer can track their shipment. Maximum 1024 characters.
+  google.protobuf.StringValue tracking_uri = 7;
+}
+
+message RefundRequestData {
+  // Order lines for this refund. Maximum 1000 items.
+  repeated OrderItem order_items = 1;
+  // To be clarified. Description of the refund shown to the customer. Max length is 255 characters.
+  google.protobuf.StringValue description = 2;
+}
+
+message Customer {
+  // B2C
+  Consumer consumer = 1;
+  // B2B
+  Bussiness bussiness = 2;
+}
+
+message Consumer{
+  // Customer’s date of birth. Format: yyyy-mm-dd
+  google.protobuf.StringValue date_of_birth = 1;
+  // Customer’s gender - ‘male’ or ‘female’
+  google.protobuf.StringValue gender = 2;
+  // Last four digits of the customer's social security number. This value is available for US customers
+  google.protobuf.StringValue last_four_ssn = 3;
+  // The customer's national identification number. This value is available for EU customers utilizing national identification numbers
+  google.protobuf.StringValue national_identification_number = 4;
+  // Customer’s Title. Allowed values per country: UK - "Mr", "Ms" DE - "Herr", "Frau" AT: "Herr, "Frau" CH: de-CH: "Herr, "Frau" it-CH: "Sig.", "Sig.ra" fr-CH: "M", "Mme" BE: "Dhr.", "Mevr." NL: "Dhr.", "Mevr."
+  google.protobuf.StringValue title = 5;
+}
+
+message Bussiness{
+  // Organization entity type. Available values: "LIMITED_COMPANY" "PUBLIC_LIMITED_COMPANY" "ENTREPRENEURIAL_COMPANY" "LIMITED_PARTNERSHIP_LIMITED_COMPANY" "LIMITED_PARTNERSHIP" "GENERAL_PARTNERSHIP" "REGISTERED_SOLE_TRADER" "SOLE_TRADER" "CIVIL_LAW_PARTNERSHIP" "PUBLIC_INSTITUTION" "OTHER"
+  google.protobuf.StringValue organization_entity_type = 1;
+  // Organization registration id. Only applicable for B2B customers.
+  google.protobuf.StringValue organization_registration_id = 2;
+  // VAT ID. Only applicable for B2B customers.
+  google.protobuf.StringValue vat_id = 3;
+}
+
+message Address {
+  // ‘Attn.’ (if applicable). Only applicable for B2B customers. [ 0 .. 99 ] characters
+  google.protobuf.StringValue attention = 1;
+  // Customer’s city. [ 0 .. 99 ] characters
+  google.protobuf.StringValue city = 2;
+  // Customer’s country. This value overrides the purchase country if they are different. ISO 3166-1 alpha-3, e.g. NOR, SWE, DNK
+  google.protobuf.StringValue country_code = 3;
+  // Customer’s email. [ 0 .. 99 ] characters
+  google.protobuf.StringValue email_address = 4;
+  // Customer’s family name. [ 0 .. 99 ] characters
+  google.protobuf.StringValue family_name = 5;
+  // Customer’s first name. [ 0 .. 99 ] characters
+  google.protobuf.StringValue given_name = 6;
+  // Organization name (if applicable). Only applicable for B2B customers. [ 0 .. 99 ] characters
+  google.protobuf.StringValue organization_name = 7;
+  // Customer’s phone number. Preferably a mobile phone number. [ 5 .. 99 ] characters
+  google.protobuf.StringValue phone_number = 8;
+  // Customer’s postal code. Validation according to Universal Postal Union addressing systems. E.g. 12345, W1G OPW. [ 0 .. 10 ] characters
+  google.protobuf.StringValue postal_code = 9;
+  // Customer’s region or state - Mandatory for US and AU market. Validations according to ISO 3166-2 format, e.g. OH, NJ, etc. [ 0 .. 99 ] characters
+  google.protobuf.StringValue region = 10;
+  // Customer’s street address. Regional formatting is required, as follows: UK/US/FR: 33 Cavendish Square Rest of EU: De Ruijterkade 7. [ 0 .. 99 ] characters
+  google.protobuf.StringValue street_address = 11;
+  // Customer’s street address. Second Line. [ 0 .. 99 ] characters
+  google.protobuf.StringValue street_address2 = 12;
+  // Customer’s Title. Allowed values per country: UK - "Mr", "Ms" DE - "Herr", "Frau" AT: "Herr, "Frau" CH: de-CH: "Herr, "Frau" it-CH: "Sig.", "Sig.ra" fr-CH: "M", "Mme" BE: "Dhr.", "Mevr." NL: "Dhr.", "Mevr." [ 0 .. 20 ] characters
+  google.protobuf.StringValue title = 13;
+}
+
+message OrderDetails {
+  repeated OrderItem order_items = 1;
+  // Format: ISO 3166-1 alpha-3, e.g. NOR, SWE, DNK
+  string country_code = 2;
+  // Shipping address.
+  Address shipping_address = 3;
+}
+
+message OrderItem {
+  // URL to an image that can be later embedded in communications between Klarna and the customer. (max 1024 characters). A minimum of 250x250 px resolution is recommended for the image to look good in the Klarna app, and below 50x50 px won't even show. We recommend using a good sized image (650x650 px or more), however the file size must not exceed 12MB. [0 .. 1024] characters.
+  google.protobuf.StringValue image_url = 1;
+  // Used for storing merchant's internal order number or other reference. Pass through field. 
+  google.protobuf.StringValue merchant_data = 2;
+  // Descriptive name of the order item. [1 .. 255] characters. Required.
+  string name = 3;
+  // Optional field.
+  ProductIdentifier product_identifier = 4;
+  // URL to the product in the merchant’s webshop that can be later used in communications between Klarna and the customer. [0 .. 1024] characters.
+  google.protobuf.StringValue product_url = 5;
+  // Quantity of the order line item. Must be a non-negative number. >=0
+  int64 quantity = 6;
+  // Unit used to describe the quantity, e.g. kg, pcs, etc. [1 .. 8] characters.
+  string quantity_unit = 7;
+  // Client facing article number, SKU or similar. [0 .. 256] characters.
+  google.protobuf.StringValue reference = 8;
+  // Tax rate of the order line. Non-negative value. The percentage value is represented with two implicit decimals. I.e 1900 = 19%. [0 .. 10000]
+  int64 tax_rate = 9;
+  // Non-negative minor units. Includes tax. Eg: 500=5 euros.
+  int64 total_discount_amount = 10;
+  // Total tax amount of the order line. Must be within ±1 of total_amount - (total_amount * (10000 / (10000 + tax_rate)). Negative when type is discount.
+  int64 total_tax_amount = 11;
+  // UnitPrice. Price for a single unit of the order line. Non-negative minor units. Includes tax, excludes discount. [ 0 .. 100000000 ].
+  int64 unit_price = 12;
+  // Total amount of the order line. Must be defined as non-negative minor units. Includes tax and discount. Eg: 2500=25 euros Value = (quantity * unit_price) - total_discount_amount. [ 0 .. 100000000 ]. Required.
+  int64 total_amount = 13;
+}
+
+message ProductIdentifier {
+  // The product's brand name as generally recognized by consumers. If no brand is available for a product, do not supply any value. [0 .. 70] characters.
+  google.protobuf.StringValue brand = 1;
+  // The product's category path as used in the merchant's webshop. Include the full and most detailed category and separate the segments with ' > '. [0 .. 750] characters.
+  google.protobuf.StringValue category_path = 2;
+  // The product's Global Trade Item Number (GTIN). Common types of GTIN are EAN, ISBN or UPC. Exclude dashes and spaces, where possible. [0 .. 50] characters.
+  google.protobuf.StringValue global_trade_item_number = 3;
+  // The product's Manufacturer Part Number (MPN), which - together with the brand - uniquely identifies a product. Only submit MPNs assigned by a manufacturer and use the most specific MPN possible. [0 .. 70] characters.
+  google.protobuf.StringValue manufacturer_part_number = 4;
+  // Color to be shown to the end customer. [0 .. 64] characters.
+  google.protobuf.StringValue color = 5;
+  // Size to be shown to the end customer. [0 .. 64] characters.
+  google.protobuf.StringValue size = 6; 
+}
+
+message PaymentFlowRedirectRequestData {
+  // Back URL
+  string back_url = 1;
+  // Cancel URL
+  string cancel_url = 2;
+  // Failure or System error URL
+  string failed_url = 3;
+  // Success URL
+  string success_url = 4;
+  // URL of the logo to be displayed. Optional.
+  google.protobuf.StringValue logo_url = 5;
+  // Title for the Payment Page. Optional.
+  google.protobuf.StringValue page_title = 6;
+  // The type of this purchase
+  PurchaseType purchase_type = 7;
+}
+
+message PaymentFlowRedirectResponseData {
+  string approval_url = 1;
+}
+
+enum PurchaseType {
+  BUY = 0;
+  RENT = 1;
+  BOOK = 2;
+  SUBSCRIBE = 3;
+  DOWNLOAD = 4;
+  ORDER = 5;
+  CONTINUE = 6;
+}
+
+enum AcquiringChannel{
+  ECOMMERCE = 0;
+  IN_STORE = 1;
+  TELESALES = 2;
+}
+
+enum ShippingMethod{
+  Undefined = 0;
+  PickUpStore = 1;
+  Home = 2;
+  BoxReg = 3;
+  BoxUnreg = 4;
+  PickUpPoint = 5;
+  Own = 6;
+  Postal = 7;
+  DHLPackstation = 8;
+  Digital = 9;
+  PickUpWarehouse = 10;
+  ClickCollect = 11;
+  PalletDelivery = 12;
+}
