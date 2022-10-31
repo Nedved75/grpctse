@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package relay.notification.v1.channels.webhook;
-
-option csharp_namespace = "Relay.Notification.V1.Channels.Webhook";
-
-message GetResponseData {
-  string url = 1;
-}
